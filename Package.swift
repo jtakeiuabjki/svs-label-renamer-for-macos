@@ -9,6 +9,10 @@ let package = Package(
     ],
     targets: [
         .executableTarget(name: "SVSLabelRenamer"),
-        .testTarget(name: "SVSLabelRenamerTests", dependencies: ["SVSLabelRenamer"])
+        .target(name: "SVSQuickLookCore"),
+        .testTarget(
+            name: "SVSLabelRenamerTests",
+            dependencies: ["SVSLabelRenamer", "SVSQuickLookCore"]
+        )
     ]
 )

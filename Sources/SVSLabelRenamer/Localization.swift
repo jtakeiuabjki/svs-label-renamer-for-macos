@@ -21,7 +21,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
 
 enum TextKey: Sendable {
     case anotherFolder, cancel, dropFolder, orChooseFolder, chooseFolder
-    case sourceSafetyNote, confirmColumn, originalFile, proposedName, status
+    case quickLookHint, sourceSafetyNote, confirmColumn, originalFile, proposedName, status
     case selectFile, selectFileDescription, outputNote, undoRename, renameConfirmed
     case label, recognitionResult, pathologyNumber, blockNumber, stain
     case pathologyExample, blockExample, stainExample, resultingName
@@ -33,7 +33,7 @@ enum TextKey: Sendable {
     case language, qualityFlagPossibleBlur, qualityFlagTooDark
     case qualityFlagTooBright, qualityFlagLowContrast, qualityFlagLittleTissue
     case overviewExplanation
-    case progressCount
+    case progressCount, currentFile
 }
 
 enum L10n {
@@ -47,9 +47,10 @@ enum L10n {
     private static let japanese: [TextKey: String] = [
         .anotherFolder: "別のフォルダを選択",
         .cancel: "キャンセル",
-        .dropFolder: "SVSフォルダをここにドロップ",
-        .orChooseFolder: "または、フォルダを選択してください",
-        .chooseFolder: "フォルダを選択",
+        .dropFolder: "SVSフォルダまたはファイルをここにドロップ",
+        .orChooseFolder: "または、フォルダ／SVSファイルを選択してください",
+        .chooseFolder: "フォルダ／SVSを選択",
+        .quickLookHint: "FinderでSVSを選択し、Spaceキーで低倍率プレビューを表示できます",
         .sourceSafetyNote: "元のSVSは、確認して名前を変更するまで変更されません",
         .confirmColumn: "確認",
         .originalFile: "元のファイル",
@@ -98,15 +99,17 @@ enum L10n {
         .qualityFlagLowContrast: "コントラストが低い可能性",
         .qualityFlagLittleTissue: "組織領域が少ないため判定が不安定",
         .overviewExplanation: "QuPathで低倍率表示したときに近い、SVS本体の組織画像です。",
-        .progressCount: "%lld / %lld 件"
+        .progressCount: "%lld / %lld 件",
+        .currentFile: "処理中: %@"
     ]
 
     private static let english: [TextKey: String] = [
         .anotherFolder: "Choose Another Folder",
         .cancel: "Cancel",
-        .dropFolder: "Drop an SVS folder here",
-        .orChooseFolder: "or choose a folder",
-        .chooseFolder: "Choose Folder",
+        .dropFolder: "Drop an SVS folder or file here",
+        .orChooseFolder: "or choose a folder / SVS file",
+        .chooseFolder: "Choose Folder / SVS",
+        .quickLookHint: "Select an SVS in Finder and press Space for a low-magnification preview",
         .sourceSafetyNote: "Original SVS files are unchanged until you confirm and rename them",
         .confirmColumn: "Confirm",
         .originalFile: "Original File",
@@ -155,16 +158,19 @@ enum L10n {
         .qualityFlagLowContrast: "Possibly low contrast",
         .qualityFlagLittleTissue: "Too little tissue for a stable assessment",
         .overviewExplanation: "The tissue image from the SVS itself, similar to QuPath at low magnification.",
-        .progressCount: "%lld / %lld files"
+        .progressCount: "%lld / %lld files",
+        .currentFile: "Current: %@"
     ]
 }
 
 enum AppMessage: Sendable {
     case chooseFolder
+    case invalidSelection
     case cancelling
     case cannotReadFolder(String)
     case analyzing(Int)
     case cancelled(Int, Int)
+    case sourceUnavailable(Int, Int)
     case cannotSavePreview(String)
     case complete
     case renamed(Int)
@@ -175,8 +181,10 @@ enum AppMessage: Sendable {
 
     func localized(_ language: AppLanguage) -> String {
         switch (language, self) {
-        case (.japanese, .chooseFolder): "SVSファイルが入ったフォルダを選択してください"
-        case (.english, .chooseFolder): "Choose a folder containing SVS files"
+        case (.japanese, .chooseFolder): "SVSフォルダまたはSVSファイルを選択してください"
+        case (.english, .chooseFolder): "Choose an SVS folder or SVS file"
+        case (.japanese, .invalidSelection): "SVSファイルまたはフォルダを選択してください"
+        case (.english, .invalidSelection): "Choose an SVS file or folder"
         case (.japanese, .cancelling): "解析をキャンセルしています…"
         case (.english, .cancelling): "Cancelling analysis…"
         case (.japanese, .cannotReadFolder(let error)): "フォルダを読み取れません: \(error)"
@@ -185,6 +193,10 @@ enum AppMessage: Sendable {
         case (.english, .analyzing(let count)): "Analyzing \(count) file\(count == 1 ? "" : "s")…"
         case (.japanese, .cancelled(let done, let total)): "解析をキャンセルしました（\(done) / \(total)件）"
         case (.english, .cancelled(let done, let total)): "Analysis cancelled (\(done) / \(total))"
+        case (.japanese, .sourceUnavailable(let done, let total)):
+            "フォルダの移動・名前変更を追跡できませんでした。もう一度選択してください（\(done) / \(total)件）"
+        case (.english, .sourceUnavailable(let done, let total)):
+            "The moved or renamed folder could not be followed. Choose it again (\(done) / \(total))"
         case (.japanese, .cannotSavePreview(let error)): "プレビューCSVを保存できません: \(error)"
         case (.english, .cannotSavePreview(let error)): "Could not save the preview CSV: \(error)"
         case (.japanese, .complete): "解析完了。内容と画質を確認してから名前を変更してください"

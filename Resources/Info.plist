@@ -19,14 +19,37 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.2.1</string>
+    <string>0.3.0</string>
     <key>CFBundleVersion</key>
-    <string>3</string>
+    <string>4</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 SVS Label Renamer for macOS contributors</string>
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.tiff</string>
+                <string>public.data</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Aperio SVS whole-slide image</string>
+            <key>UTTypeIdentifier</key>
+            <string>org.svslabelrenamer.aperio-svs</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>svs</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>image/tiff</string>
+            </dict>
+        </dict>
+    </array>
 </dict>
 </plist>

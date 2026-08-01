@@ -42,8 +42,8 @@ import Testing
     let record = SlideRecord(sourceURL: URL(fileURLWithPath: "/tmp/example.svs"))
     #expect(record.localizedStatus(.japanese) == "要確認")
     #expect(record.localizedStatus(.english) == "Needs review")
-    #expect(L10n.text(.chooseFolder, language: .japanese) == "フォルダを選択")
-    #expect(L10n.text(.chooseFolder, language: .english) == "Choose Folder")
+    #expect(L10n.text(.chooseFolder, language: .japanese) == "フォルダ／SVSを選択")
+    #expect(L10n.text(.chooseFolder, language: .english) == "Choose Folder / SVS")
     #expect(ProcessingFailure(OCRServiceError.noResult).localized(.english) == "No label text could be recognized")
     #expect(
         RenameTransactionError.destinationExists("same.svs").localized(.english)
