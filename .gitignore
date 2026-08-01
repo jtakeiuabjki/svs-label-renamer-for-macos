@@ -3,4 +3,5 @@
 .vendor/
 dist/
 .DS_Store
+__pycache__/
 SVS_Label_Renamer_Output/

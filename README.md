@@ -43,7 +43,9 @@ Python、Homebrew、OpenSlideの追加インストールは不要です。
 
 ## ダウンロードと起動
 
-1. [GitHub Releases](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases)から`SVSLabelRenamer-for-macOS.zip`をダウンロードします。
+最新の配布版は**v0.3.0（ベータ版）**です。
+
+1. [v0.3.0のReleaseページ](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/tag/v0.3.0)から[`SVSLabelRenamer-for-macOS.zip`](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-for-macOS.zip)をダウンロードします。
 2. ZIPを展開し、`SVS Label Renamer for macOS.app`を`アプリケーション`フォルダへ移動します。
 3. アプリを一度起動します。この初回起動でQuick Look機能がmacOSへ登録されます。
 
@@ -54,6 +56,14 @@ shasum -a 256 ~/Downloads/SVSLabelRenamer-for-macOS.zip
 ```
 
 この配布版はアドホック署名済みですが、Appleによる公証（notarization）はまだ行っていません。初回起動をmacOSに止められた場合は、一度起動を試したあと、`システム設定` → `プライバシーとセキュリティ` → `このまま開く`を選んでください。詳しくは[Appleの案内](https://support.apple.com/102445)を参照してください。信頼できるGitHub Releaseから取得したファイルだけを開いてください。
+
+## 約55秒の操作動画
+
+[![SVS Label Renamer for macOS v0.3.0 操作動画](docs/images/v030-demo-poster.png)](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-v0.3.0-demo.mp4)
+
+[操作動画をMP4で見る（45〜60秒）](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-v0.3.0-demo.mp4)
+
+動画では、合成したデモ用SVSだけを使い、ファイル選択、ラベルOCR、低倍率overviewと画質確認、名前変更候補の確認、CSV出力までを紹介します。患者情報は含まれていません。表示内容と画質確認は診断用ではありません。
 
 ## 使い方
 
@@ -158,9 +168,17 @@ Spatial OCR improves filename proposals but does not guarantee correctness. Alwa
 - Apple Silicon or Intel Mac
 - No Python, Homebrew, or separate OpenSlide installation
 
-Download `SVSLabelRenamer-for-macOS.zip` from [GitHub Releases](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases), unzip it, move `SVS Label Renamer for macOS.app` to Applications, and launch it once so macOS discovers the Quick Look integration. No installer is required. Each GitHub Release lists the SHA-256 of its ZIP.
+The latest distributable build is **v0.3.0 (beta)**. Download [`SVSLabelRenamer-for-macOS.zip`](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-for-macOS.zip) from the [v0.3.0 release page](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/tag/v0.3.0), unzip it, move `SVS Label Renamer for macOS.app` to Applications, and launch it once so macOS discovers the Quick Look integration. No installer is required. Each GitHub Release lists the SHA-256 of its ZIP.
 
 The current build is ad-hoc signed but not Apple-notarized. If macOS blocks the first launch, try opening the app once, then go to `System Settings` → `Privacy & Security` → `Open Anyway`. See [Apple's guidance](https://support.apple.com/102445), and only open a build obtained from a GitHub Release you trust.
+
+### 45–60 second demo video
+
+[![SVS Label Renamer for macOS v0.3.0 demo video](docs/images/v030-demo-poster.png)](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-v0.3.0-demo.mp4)
+
+[Watch the demo as an MP4](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases/download/v0.3.0/SVSLabelRenamer-v0.3.0-demo.mp4).
+
+The video uses a fully synthetic demo SVS to show file selection, local label OCR, low-magnification overview and quality review, filename confirmation, and CSV output. It contains no patient data. The preview and quality review shown are non-diagnostic.
 
 ### Basic workflow
 
