@@ -19,6 +19,16 @@ SVSファイルのラベルを読み取り、安全なファイル名を提案�
 - 同名ファイルの検出、安全な一括変更、直前の変更の取り消し
 - 日本語／English表示、Apple Silicon／Intel Mac対応
 
+### v0.3.0の主な変更
+
+- FinderでSVSを選び、Spaceキーで低倍率全体像を確認できるQuick Look機能を追加
+- フォルダ一括処理に加え、SVS 1件だけの選択に対応
+- 解析中に選択フォルダを移動・改名しても、対象ファイルを安全に追跡
+- ラベルの位置情報をOCRに利用し、短辺・外縁側の印刷番号を病理番号、下側の既知マーカー名を染色として優先
+- 特殊な配置や座標を取得できないラベルでは従来の文字判定へ戻り、曖昧な染色名は無理に確定しない
+
+位置判定はファイル名候補を改善するための優先傾向であり、正しさを保証するものではありません。名前変更前に、ラベル画像と病理番号・ブロック番号・染色を必ず確認してください。
+
 命名形式は`病理番号_ブロック番号_染色情報.svs`です（ブロック番号は任意）。
 
 - `K1234 CD163` → `K1234_CD163.svs`
@@ -131,6 +141,16 @@ SVS Label Renamer for macOS is a standalone app that reads slide labels, propose
 
 > [!IMPORTANT]
 > This is a beta release (v0.3.0). Review every OCR result and warning before renaming. Quick Look previews and quality screening are non-diagnostic review aids.
+
+### What's new in v0.3.0
+
+- Finder Quick Look previews for a local low-magnification SVS overview
+- Direct selection of one SVS in addition to folder-based batch processing
+- Safe tracking when the selected folder is moved or renamed during analysis
+- Spatial OCR that prefers the printed pathology ID near the short outer edge and a known stain marker in the lower label region
+- Conservative fallback to text-only parsing for unusual layouts or unavailable coordinates, without forcing ambiguous stain corrections
+
+Spatial OCR improves filename proposals but does not guarantee correctness. Always compare the proposed pathology ID, optional block ID, and stain with the exported label image before renaming.
 
 ### Requirements and download
 
