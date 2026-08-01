@@ -44,6 +44,12 @@ import Testing
     #expect(ImageQualityAnalyzer.assess(overview) != nil)
     let parsed = try OCRService.recognize(label)
     #expect(!parsed.raw.isEmpty)
+    if let expectedPathology = ProcessInfo.processInfo.environment["SVS_EXPECT_PATHOLOGY"] {
+        #expect(parsed.pathology == expectedPathology)
+    }
+    if let expectedStain = ProcessInfo.processInfo.environment["SVS_EXPECT_STAIN"] {
+        #expect(parsed.stain == expectedStain)
+    }
 
     let attributesAfter = try FileManager.default.attributesOfItem(atPath: source.path)
     #expect(attributesBefore[.size] as? NSNumber == attributesAfter[.size] as? NSNumber)

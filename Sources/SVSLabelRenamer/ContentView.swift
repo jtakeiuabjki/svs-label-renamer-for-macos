@@ -34,10 +34,17 @@ struct ContentView: View {
 
             if model.isWorking {
                 ProgressView(value: Double(model.completedCount), total: Double(max(model.totalCount, 1))) {
-                    Text(String(
-                        format: t(.progressCount),
-                        Int64(model.completedCount), Int64(model.totalCount)
-                    ))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(String(
+                            format: t(.progressCount),
+                            Int64(model.completedCount), Int64(model.totalCount)
+                        ))
+                        if let currentFilename = model.currentFilename {
+                            Text(String(format: t(.currentFile), currentFilename))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
 
@@ -55,6 +62,9 @@ struct ContentView: View {
                     Button(t(.chooseFolder), action: model.chooseFolder)
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
+                    Label(t(.quickLookHint), systemImage: "eye")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     Text(t(.sourceSafetyNote))
                         .font(.caption)
                         .foregroundStyle(.secondary)

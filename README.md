@@ -1,20 +1,33 @@
 # SVS Label Renamer for macOS
 
-SVSファイルのラベルを読み取り、安全なファイル名を提案するmacOSアプリです。ラベル画像、macro画像、WSI本体の低倍率全体像をPNGで保存し、変更前後の名前をCSVに記録します。処理はMac内で完結し、日本語／Englishを画面右上で切り替えられます。
+SVSファイルのラベルを読み取り、安全なファイル名を提案するmacOSアプリです。FinderでSVSを選択してSpaceキーを押すと、Quick Lookで低倍率全体像を表示できます。ラベル画像、macro画像、WSI本体の低倍率全体像をPNGで保存し、変更前後の名前をCSVに記録します。処理はMac内で完結し、日本語／Englishを画面右上で切り替えられます。
 
 > [!IMPORTANT]
-> 現在はベータ版（v0.2.1）です。OCR結果と画質警告を確認してから名前を変更してください。本アプリの画質スクリーニングは診断用の品質保証ではありません。
+> 現在はベータ版（v0.3.0）です。OCR結果と画質警告を確認してから名前を変更してください。本アプリのQuick Look表示と画質スクリーニングは診断用ではありません。
 
 ## 主な機能
 
-- フォルダ内の`.svs`ファイルをまとめて読み込み
+- フォルダ内の`.svs`をまとめて読み込み、またはSVS 1件だけを選択
+- 解析中に選択フォルダをFinderで移動・改名しても追跡
+- FinderでSVSを選び、Spaceキーで低倍率全体像をQuick Look表示
 - Apple VisionによるローカルOCR（画像を外部へ送信しません）
+- ラベル内の上下配置を加味し、短辺・外縁側に印刷された病理番号と下側の染色名を優先
 - 病理番号、任意のブロック番号、染色情報からファイル名を提案
 - label、macro、低倍率overviewをPNGで出力
 - 低倍率overviewを使った、明るさ・コントラスト・組織量・細部量の確認補助
 - 変更前後の名前と処理結果をCSVで保存
 - 同名ファイルの検出、安全な一括変更、直前の変更の取り消し
 - 日本語／English表示、Apple Silicon／Intel Mac対応
+
+### v0.3.0の主な変更
+
+- FinderでSVSを選び、Spaceキーで低倍率全体像を確認できるQuick Look機能を追加
+- フォルダ一括処理に加え、SVS 1件だけの選択に対応
+- 解析中に選択フォルダを移動・改名しても、対象ファイルを安全に追跡
+- ラベルの位置情報をOCRに利用し、短辺・外縁側の印刷番号を病理番号、下側の既知マーカー名を染色として優先
+- 特殊な配置や座標を取得できないラベルでは従来の文字判定へ戻り、曖昧な染色名は無理に確定しない
+
+位置判定はファイル名候補を改善するための優先傾向であり、正しさを保証するものではありません。名前変更前に、ラベル画像と病理番号・ブロック番号・染色を必ず確認してください。
 
 命名形式は`病理番号_ブロック番号_染色情報.svs`です（ブロック番号は任意）。
 
@@ -31,9 +44,10 @@ Python、Homebrew、OpenSlideの追加インストールは不要です。
 ## ダウンロードと起動
 
 1. [GitHub Releases](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases)から`SVSLabelRenamer-for-macOS.zip`をダウンロードします。
-2. ZIPを展開し、`SVS Label Renamer for macOS.app`をダブルクリックします。インストーラーはなく、アプリは任意の場所から起動できます。
+2. ZIPを展開し、`SVS Label Renamer for macOS.app`を`アプリケーション`フォルダへ移動します。
+3. アプリを一度起動します。この初回起動でQuick Look機能がmacOSへ登録されます。
 
-v0.2.1配布ZIPのSHA-256は`21eace91dbc84c95d6c9f82d28042218a425660b70cd94be1d6fca6441bc833b`です。ダウンロード後に確認する場合は、ターミナルで次を実行します。
+配布ZIPのSHA-256は各GitHub Releaseに記載します。ダウンロード後に確認する場合は、ターミナルで次を実行します。
 
 ```bash
 shasum -a 256 ~/Downloads/SVSLabelRenamer-for-macOS.zip
@@ -43,12 +57,24 @@ shasum -a 256 ~/Downloads/SVSLabelRenamer-for-macOS.zip
 
 ## 使い方
 
-1. アプリで「SVSフォルダを選択」を押します。
+### FinderのSpaceキーで表示
+
+1. Finderで`.svs`ファイルを選択します。
+2. Spaceキーを押します。
+3. WSI画像ピラミッドから生成した低倍率全体像がQuick Lookに表示されます。
+
+表示されない場合は、アプリを`アプリケーション`フォルダへ移動して一度起動してください。続いて「システム設定」で「機能拡張」を検索し、「クイックルックプレビュー」にある本アプリの機能を有効にします。Finderが古い結果を保持している場合は、Finderを再度開くと反映されます。
+
+Quick Lookは長辺最大2048 pxの確認用プレビューです。顕微鏡倍率での診断表示や、タイルを使った高倍率ズームには対応していません。SVSの内容を書き換えず、プレビュー画像を元ファイルの横へ保存することもありません。
+
+### ラベル読取と名前変更
+
+1. アプリで「フォルダ／SVSを選択」を押し、フォルダまたはSVS 1件を選びます。
 2. 自動生成されたlabel、macro、overviewとOCR結果を確認します。
 3. 必要なら病理番号、ブロック番号、染色情報を修正します。
 4. 変更候補に問題がなければ「確認して名前を変更」を押します。
 
-初回利用時は元フォルダのバックアップを推奨します。選択したフォルダ直下の`.svs`だけが対象で、サブフォルダは走査しません。
+初回利用時は元フォルダのバックアップを推奨します。フォルダを選ぶと直下の`.svs`だけが対象になり、サブフォルダは走査しません。SVSファイルを直接選ぶと、その1件だけを処理します。
 
 フォルダ選択直後はPNGとプレビューCSVだけを作成し、SVSの名前は変更しません。明示的に名前変更を実行した場合も、SVSの画像内容には触れず、ファイル名だけを変更します。
 
@@ -97,6 +123,12 @@ swift run SVSLabelRenamer
 bash scripts/build_app.sh
 ```
 
+既定のアドホック署名ビルドにも、現行のQuick Look Preview Extensionが同梱されます。Developer ID証明書がある場合は、次のように同じアプリをDeveloper IDで署名できます。
+
+```bash
+CODESIGN_IDENTITY="Developer ID Application: Example (TEAMID)" bash scripts/build_app.sh
+```
+
 ## License
 
 本体は[MIT License](LICENSE)で公開しています。同梱ライブラリについては[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
@@ -105,10 +137,20 @@ bash scripts/build_app.sh
 
 ## English
 
-SVS Label Renamer for macOS is a standalone app that reads slide labels, proposes filenames, exports label/macro/low-magnification WSI overview PNGs, and records rename results in CSV. OCR and quality screening run locally with Apple Vision. Use the control in the upper-right corner to switch between Japanese and English.
+SVS Label Renamer for macOS is a standalone app that reads slide labels, proposes filenames, exports label/macro/low-magnification WSI overview PNGs, and records rename results in CSV. Select an SVS file in Finder and press Space to see its low-magnification overview in Quick Look. OCR and quality screening run locally with Apple Vision. Use the control in the upper-right corner to switch between Japanese and English.
 
 > [!IMPORTANT]
-> This is a beta release (v0.2.1). Review every OCR result and warning before renaming. Quality screening is a non-diagnostic review aid.
+> This is a beta release (v0.3.0). Review every OCR result and warning before renaming. Quick Look previews and quality screening are non-diagnostic review aids.
+
+### What's new in v0.3.0
+
+- Finder Quick Look previews for a local low-magnification SVS overview
+- Direct selection of one SVS in addition to folder-based batch processing
+- Safe tracking when the selected folder is moved or renamed during analysis
+- Spatial OCR that prefers the printed pathology ID near the short outer edge and a known stain marker in the lower label region
+- Conservative fallback to text-only parsing for unusual layouts or unavailable coordinates, without forcing ambiguous stain corrections
+
+Spatial OCR improves filename proposals but does not guarantee correctness. Always compare the proposed pathology ID, optional block ID, and stain with the exported label image before renaming.
 
 ### Requirements and download
 
@@ -116,20 +158,22 @@ SVS Label Renamer for macOS is a standalone app that reads slide labels, propose
 - Apple Silicon or Intel Mac
 - No Python, Homebrew, or separate OpenSlide installation
 
-Download `SVSLabelRenamer-for-macOS.zip` from [GitHub Releases](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases), unzip it, and open `SVS Label Renamer for macOS.app`. No installer is required.
-
-SHA-256 for the v0.2.1 ZIP: `21eace91dbc84c95d6c9f82d28042218a425660b70cd94be1d6fca6441bc833b`
+Download `SVSLabelRenamer-for-macOS.zip` from [GitHub Releases](https://github.com/jtakeiuabjki/svs-label-renamer-for-macos/releases), unzip it, move `SVS Label Renamer for macOS.app` to Applications, and launch it once so macOS discovers the Quick Look integration. No installer is required. Each GitHub Release lists the SHA-256 of its ZIP.
 
 The current build is ad-hoc signed but not Apple-notarized. If macOS blocks the first launch, try opening the app once, then go to `System Settings` → `Privacy & Security` → `Open Anyway`. See [Apple's guidance](https://support.apple.com/102445), and only open a build obtained from a GitHub Release you trust.
 
 ### Basic workflow
 
-1. Select a folder containing `.svs` files.
+In Finder, select an `.svs` file and press Space to show a local low-magnification Quick Look preview. If it does not appear, launch the app once from Applications, search System Settings for Extensions, and enable the app under Quick Look Preview. The preview has a maximum long edge of 2048 px; it is not a diagnostic or high-magnification tiled viewer and does not modify the SVS.
+
+Label OCR uses the vertical layout as a soft signal: it prefers a printed pathology ID near the upper short edge and a stain near the lower part of the label. Text matching remains available as a fallback for labels with different layouts.
+
+1. Select a folder containing `.svs` files, or select one SVS file directly.
 2. Review the exported label, macro, overview, and OCR fields.
 3. Correct the pathology ID, optional block, or stain when needed.
 4. Confirm the proposals, then run the rename action.
 
-Back up the source folder before the first batch rename. Only `.svs` files directly inside the selected folder are scanned; subfolders are not scanned. Selecting a folder only creates PNG previews and `rename_preview.csv`. The app does not rename anything until you explicitly confirm. Renaming changes filenames only, not the image data inside the SVS files.
+Back up the source folder before the first batch rename. Only `.svs` files directly inside the selected folder are scanned; subfolders are not scanned. Selecting one SVS processes only that file. The app follows the selected folder if it is moved or renamed in Finder during analysis. A selection only creates PNG previews and `rename_preview.csv`; nothing is renamed until you explicitly confirm. Renaming changes filenames only, not the image data inside the SVS files.
 
 Output is written to `SVS_Label_Renamer_Output` inside the selected folder. The overview is generated from the WSI pyramid with a maximum long edge of 2048 px. It resembles a low-magnification QuPath view, not a full-resolution diagnostic export.
 
